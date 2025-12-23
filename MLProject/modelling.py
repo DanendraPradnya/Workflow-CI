@@ -45,7 +45,7 @@ def train_model_autolog():
     model = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
     
     model.fit(X_train_res, y_train_res)
-    # Log Model ke MLflow (Wajib untuk build-docker)
+
     
     mlflow.sklearn.log_model(model, "model")
 
