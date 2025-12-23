@@ -26,7 +26,7 @@ jobs:
     - name: Run Training (Local Tracking)
       run: |
         # Training berjalan dan menyimpan hasil di folder ./mlruns
-        python modelling.py
+        python MLProject/modelling.py
 
     - name: Build Docker Image via MLflow
       run: |
