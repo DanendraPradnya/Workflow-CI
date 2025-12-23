@@ -16,7 +16,7 @@ def train_model_autolog():
   mlflow.sklearn.autolog()
 
   #Loading Data
-  preprocessed_path ="credit_card_fraud_processed.csv"
+  preprocessed_path ="MLProject/credit_card_fraud_processed.csv"
   
   if not os.path.exists(preprocessed_path):
     print("Data processed tidak ditemukan! Jalankan preprocessing terlebih dahulu.")
@@ -53,14 +53,14 @@ def train_model_autolog():
     os.makedirs("artifacts", exist_ok=True)
     joblib.dump(model, "artifacts/best_model.pkl")
 
-    # Simpan Run ID ke file (untuk digunakan GitHub Actions)
+    # Simpan Run ID ke file
     with open("run_id.txt", "w") as f:
         f.write(mlflow.active_run().info.run_id)
     
     y_pred = model.predict(X_test)
     accuracy = model.score(X_test, y_test)
     print(classification_report(y_test, y_pred))
-    mlflow.log_metric(accuracy)
+    mlflow.log_metric("accuracy", accuracy)
 
 if __name__ == "__main__":
   train_model_autolog()
