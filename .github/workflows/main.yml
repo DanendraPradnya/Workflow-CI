@@ -23,15 +23,13 @@ jobs:
       run: |
         pip install mlflow scikit-learn pandas imbalanced-learn
 
-    - name: Run Training (Local Tracking)
+    - name: Run Training MLProject
       run: |
-        # Training berjalan dan menyimpan hasil di folder ./mlruns
-        python MLProject/modelling.py
+        mlflow run . --env-manager local
 
     - name: Build Docker Image via MLflow
       run: |
-        RUN_ID=$(cat run_id.txt)
-        # MLflow mengambil model dari folder mlruns lokal untuk di-build
+        RUN_ID=$(ls -t mlruns/0 | head -n 1) 
         mlflow models build-docker \
           -m "runs:/$RUN_ID/model" \
           -n "${{ secrets.DOCKERHUB_USERNAME }}/fraud-model-local:latest"
