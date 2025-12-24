@@ -25,11 +25,18 @@ jobs:
 
     - name: Run Training MLProject
       run: |
-        mlflow run . --env-manager local
+        mlflow run MLProject --env-manager local
 
     - name: Build Docker Image via MLflow
       run: |
-        RUN_ID=$(ls -t mlruns/0 | head -n 1) 
+        if [ -f run_id.txt ]; then
+          RUN_ID=$(cat run_id.txt)
+          echo "Menggunakan Run ID: $RUN_ID"
+        else
+          echo "Error: run_id.txt tidak ditemukan!"
+          exit 1
+        fi
+        
         mlflow models build-docker \
           -m "runs:/$RUN_ID/model" \
           -n "${{ secrets.DOCKERHUB_USERNAME }}/fraud-model-local:latest"
