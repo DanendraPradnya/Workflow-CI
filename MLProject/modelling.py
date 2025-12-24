@@ -16,7 +16,7 @@ def train_model_autolog():
   mlflow.sklearn.autolog()
 
   #Loading Data
-  preprocessed_path ="MLProject/credit_card_fraud_processed.csv"
+  preprocessed_path ="credit_card_fraud_processed.csv"
   
   if not os.path.exists(preprocessed_path):
     print("Data processed tidak ditemukan! Jalankan preprocessing terlebih dahulu.")
