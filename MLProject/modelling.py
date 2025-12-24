@@ -39,15 +39,10 @@ def train_model_autolog():
   # Mulai MLflow Run
   with mlflow.start_run(run_name="RF_Fraud_Autologging") as run:
     print(f"Running experiment: {run.info.run_name}")
-    
-    mlflow.log_param("oversampling_method", "SMOTE")
-    
+        
     model = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
     
     model.fit(X_train_res, y_train_res)
-
-    
-    mlflow.sklearn.log_model(model, "model")
 
     # Simpan Model Lokal untuk Artifact GitHub
     os.makedirs("artifacts", exist_ok=True)
