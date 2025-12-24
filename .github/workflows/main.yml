@@ -29,14 +29,16 @@ jobs:
 
     - name: Build Docker Image via MLflow
       run: |
-        if [ -f run_id.txt ]; then
-          RUN_ID=$(cat run_id.txt)
+        # Cari file run_id.txt di dalam folder MLProject
+        if [ -f MLProject/run_id.txt ]; then
+          RUN_ID=$(cat MLProject/run_id.txt)
           echo "Menggunakan Run ID: $RUN_ID"
         else
-          echo "Error: run_id.txt tidak ditemukan!"
+          echo "Error: MLProject/run_id.txt tidak ditemukan!"
           exit 1
         fi
-        
+
+        # Jalankan build
         mlflow models build-docker \
           -m "runs:/$RUN_ID/model" \
           -n "${{ secrets.DOCKERHUB_USERNAME }}/fraud-model-local:latest"
