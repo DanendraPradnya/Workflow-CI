@@ -10,6 +10,10 @@ jobs:
     permissions:
       contents: write
 
+    # Definisi Environment Variable untuk seluruh Job agar konsisten
+    env:
+      MLFLOW_TRACKING_URI: file://${{ github.workspace }}/mlruns
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -25,11 +29,12 @@ jobs:
 
     - name: Run Training MLProject
       run: |
+        # Memastikan folder mlruns dibuat di root direktori
         mlflow run MLProject --env-manager local
 
     - name: Build Docker Image via MLflow
       run: |
-        # Cari file run_id.txt di dalam folder MLProject
+        # 1. Verifikasi dan ambil Run ID dari folder MLProject
         if [ -f MLProject/run_id.txt ]; then
           RUN_ID=$(cat MLProject/run_id.txt)
           echo "Menggunakan Run ID: $RUN_ID"
@@ -38,10 +43,11 @@ jobs:
           exit 1
         fi
 
-        # Jalankan build
+        # 2. Jalankan build dengan mengarahkan ke local tracking URI
         mlflow models build-docker \
           -m "runs:/$RUN_ID/model" \
-          -n "${{ secrets.DOCKERHUB_USERNAME }}/fraud-model-local:latest"
+          -n "${{ secrets.DOCKERHUB_USERNAME }}/fraud-model-local:latest" \
+          --env-manager local
 
     - name: Login & Push to DockerHub
       uses: docker/login-action@v3
@@ -58,5 +64,4 @@ jobs:
         name: mlflow-experiment-results
         path: |
           mlruns/
-          models/
-          run_id.txt
+          MLProject/run_id.txt
